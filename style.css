@@ -1,0 +1,358 @@
+/* REPY Web Converter - Brutalist Monochrome Theme (단색 & 각진 스타일) */
+
+:root {
+  --bg: #ffffff;
+  --fg: #000000;
+  --panel-bg: #f8f8f8;
+  --border: #000000;
+  --border-width: 2px;
+  --accent: #000000;
+  --accent-fg: #ffffff;
+  --gray-light: #eeeeee;
+  --gray-mid: #cccccc;
+  --error-bg: #000000;
+  --error-fg: #ffffff;
+  --font-mono: 'JetBrains Mono', 'Consolas', 'Courier New', monospace;
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border-radius: 0 !important; /* 각진 스타일 강제 */
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--fg);
+  font-family: var(--font-mono);
+  font-size: 14px;
+  line-height: 1.5;
+  padding: 16px;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* 상단 헤더 */
+header {
+  border: var(--border-width) solid var(--border);
+  padding: 14px 18px;
+  background: var(--bg);
+  margin-bottom: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.logo-area {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.logo-badge {
+  background: var(--accent);
+  color: var(--accent-fg);
+  padding: 4px 10px;
+  font-weight: 900;
+  letter-spacing: 1px;
+}
+
+h1 {
+  font-size: 18px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+}
+
+.header-meta {
+  font-size: 12px;
+  color: #555;
+  border-left: var(--border-width) solid var(--border);
+  padding-left: 12px;
+}
+
+/* 각진 버튼 스타일 */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  font-weight: 700;
+  padding: 8px 16px;
+  border: var(--border-width) solid var(--border);
+  background: var(--bg);
+  color: var(--fg);
+  cursor: pointer;
+  text-decoration: none;
+  user-select: none;
+  transition: none;
+}
+
+.btn:hover {
+  background: var(--accent);
+  color: var(--accent-fg);
+}
+
+.btn:active {
+  transform: translate(2px, 2px);
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: var(--accent-fg);
+  font-size: 14px;
+  padding: 10px 20px;
+}
+
+.btn-primary:hover {
+  background: #333333;
+  color: #ffffff;
+}
+
+.btn-sm {
+  padding: 4px 10px;
+  font-size: 12px;
+}
+
+/* 폼 요소 (select, input) */
+select, input[type="text"] {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  padding: 7px 12px;
+  border: var(--border-width) solid var(--border);
+  background: var(--bg);
+  color: var(--fg);
+  outline: none;
+}
+
+select:focus, input[type="text"]:focus {
+  background: var(--gray-light);
+}
+
+/* 툴바 */
+.toolbar {
+  border: var(--border-width) solid var(--border);
+  border-bottom: none;
+  padding: 10px 14px;
+  background: var(--panel-bg);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.toolbar-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+/* 메인 작업 영역: 에디터 + 결과창 */
+.main-layout {
+  display: grid;
+  grid-template-columns: 1fr 380px;
+  border: var(--border-width) solid var(--border);
+  flex: 1;
+  min-height: 540px;
+}
+
+@media (max-width: 900px) {
+  .main-layout {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* 에디터 컨테이너 */
+.editor-container {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  background: #ffffff;
+  border-right: var(--border-width) solid var(--border);
+}
+
+.editor-wrapper {
+  display: flex;
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+}
+
+.line-numbers {
+  width: 48px;
+  padding: 14px 6px;
+  background: #fafafa;
+  border-right: 1px solid var(--gray-mid);
+  color: #888888;
+  font-size: 13px;
+  line-height: 20px;
+  text-align: right;
+  user-select: none;
+  overflow: hidden;
+}
+
+#code-editor {
+  flex: 1;
+  width: 100%;
+  padding: 14px 14px;
+  font-family: var(--font-mono);
+  font-size: 13px;
+  line-height: 20px;
+  border: none;
+  outline: none;
+  resize: none;
+  background: transparent;
+  color: #000000;
+  tab-size: 4;
+  white-space: pre;
+  overflow: auto;
+}
+
+/* 사이드 패널 (통계 및 로그) */
+.side-panel {
+  display: flex;
+  flex-direction: column;
+  background: var(--panel-bg);
+}
+
+.side-header {
+  border-bottom: var(--border-width) solid var(--border);
+  padding: 10px 14px;
+  font-weight: 700;
+  background: var(--gray-light);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.side-content {
+  padding: 14px;
+  flex: 1;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.stat-box {
+  border: 1px solid var(--border);
+  background: #ffffff;
+  padding: 10px;
+}
+
+.stat-title {
+  font-size: 11px;
+  text-transform: uppercase;
+  color: #666;
+  margin-bottom: 6px;
+  font-weight: 700;
+}
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+}
+
+.stat-item {
+  border: 1px solid var(--gray-mid);
+  padding: 6px 8px;
+}
+
+.stat-item .label {
+  font-size: 11px;
+  color: #666;
+}
+
+.stat-item .val {
+  font-size: 16px;
+  font-weight: 700;
+}
+
+/* 로그 및 에러 메시지 */
+.log-box {
+  border: var(--border-width) solid var(--border);
+  background: #ffffff;
+  padding: 12px;
+  min-height: 120px;
+  font-size: 12px;
+  overflow-x: auto;
+}
+
+.log-box.error {
+  border-color: #000;
+  background: #fff0f0;
+  color: #990000;
+}
+
+.log-box.success {
+  border-color: #000;
+  background: #f0fff0;
+  color: #006600;
+}
+
+/* 하단 문법 레퍼런스 */
+.reference-drawer {
+  margin-top: 16px;
+  border: var(--border-width) solid var(--border);
+}
+
+.reference-header {
+  padding: 10px 14px;
+  background: var(--gray-light);
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  user-select: none;
+}
+
+.reference-content {
+  padding: 16px;
+  background: var(--bg);
+  display: none;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 16px;
+}
+
+.reference-content.open {
+  display: grid;
+}
+
+.ref-card {
+  border: 1px solid var(--border);
+  padding: 10px 12px;
+}
+
+.ref-card h3 {
+  font-size: 13px;
+  margin-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 4px;
+}
+
+.ref-card code {
+  display: block;
+  font-size: 11px;
+  padding: 2px 0;
+  color: #222;
+}
+
+/* 푸터 */
+footer {
+  margin-top: 16px;
+  padding: 12px 0;
+  font-size: 12px;
+  color: #666;
+  text-align: center;
+  border-top: 1px solid var(--gray-mid);
+}

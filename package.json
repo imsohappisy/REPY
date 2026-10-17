@@ -1,0 +1,20 @@
+{
+  "name": "real-entry-python",
+  "version": "0.1.0",
+  "description": "REPY — Real Entry Python. 엔트리의 모든 블록을 파이썬 문법으로 쓰고 .ent 작품 파일로 변환합니다.",
+  "type": "module",
+  "license": "MIT",
+  "private": true,
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build:registry": "node tools/build-registry.mjs",
+    "test": "node --test tests/",
+    "dev": "node tools/serve.mjs",
+    "repy": "node tools/cli.mjs"
+  },
+  "dependencies": {
+    "fflate": "^0.8.3"
+  }
+}

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>REPY Converter - Real Entry Python to .ent</title>
+  <meta name="description" content="진짜 엔트리 파이썬(REPY) 코드를 엔트리 작품 파일(.ent)로 즉시 변환하는 웹 도구입니다.">
+  <link rel="stylesheet" href="./style.css">
+  <script type="importmap">
+  {
+    "imports": {
+      "fflate": "./vendor/fflate.js",
+      "repy/": "../src/"
+    }
+  }
+  </script>
+</head>
+<body>
+
+  <!-- 상단 헤더 -->
+  <header>
+    <div class="logo-area">
+      <span class="logo-badge">REPY</span>
+      <h1>REAL ENTRY PYTHON // CONVERTER</h1>
+      <span class="header-meta">v0.1.0 // ENGINE: 474 BLOCKS READY</span>
+    </div>
+    <div style="font-size: 12px; font-weight: 700;">
+      [ OFFLINE STANDALONE TOOL ]
+    </div>
+  </header>
+
+  <!-- 툴바 제어 영역 -->
+  <div class="toolbar">
+    <div class="toolbar-group">
+      <button id="btn-new" class="btn btn-sm">새로 만들기</button>
+      <button id="btn-copy" class="btn btn-sm">코드 복사</button>
+      <label for="file-upload" class="btn btn-sm" style="cursor: pointer;">파일 열기</label>
+      <input type="file" id="file-upload" accept=".py,.repy,.txt" style="display: none;">
+    </div>
+
+    <div class="toolbar-group">
+      <button id="btn-convert" class="btn btn-primary">
+        [ .ENT 변환 및 다운로드 ]
+      </button>
+    </div>
+  </div>
+
+  <!-- 메인 작업창 -->
+  <div class="main-layout">
+    <!-- 왼쪽: 코드 에디터 -->
+    <div class="editor-container">
+      <div class="editor-wrapper">
+        <div id="line-numbers" class="line-numbers">1</div>
+        <textarea id="code-editor" spellcheck="false" placeholder="# 여기에 REPY 파이썬 코드를 작성하세요..."></textarea>
+      </div>
+    </div>
+
+    <!-- 오른쪽: 프로젝트 통계 및 변환 로그 -->
+    <div class="side-panel">
+      <div class="side-header">
+        <span>PROJECT STATUS</span>
+        <span id="status-indicator" style="font-size: 11px;">[ IDLE ]</span>
+      </div>
+
+      <div class="side-content">
+        <!-- 통계 박스 -->
+        <div class="stat-box">
+          <div class="stat-title">PROJECT METRICS</div>
+          <div class="stat-grid">
+            <div class="stat-item">
+              <div class="label">장면(Scenes)</div>
+              <div id="stat-scenes" class="val">0</div>
+            </div>
+            <div class="stat-item">
+              <div class="label">오브젝트(Objects)</div>
+              <div id="stat-objects" class="val">0</div>
+            </div>
+            <div class="stat-item">
+              <div class="label">변수/리스트</div>
+              <div id="stat-vars" class="val">0</div>
+            </div>
+            <div class="stat-item">
+              <div class="label">함수(Functions)</div>
+              <div id="stat-funcs" class="val">0</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 로그 출력창 -->
+        <div>
+          <div class="stat-title">COMPILATION LOG</div>
+          <pre id="log-output" class="log-box">변환 버튼을 누르면 로그가 표시됩니다.</pre>
+        </div>
+
+        <!-- 안내 상자 -->
+        <div class="stat-box" style="font-size: 12px; line-height: 1.6;">
+          <div class="stat-title">엔트리에서 여는 방법</div>
+          1. 변환된 <b>.ent 파일</b>을 다운로드합니다.<br>
+          2. <a href="https://playentry.org" target="_blank" style="color: #000; font-weight: 700;">playentry.org</a> 접속 후 [만들기] → [작품 불러오기]<br>
+          3. 다운로드한 .ent 파일을 선택하면 즉시 실행 및 블록 편집 가능!
+        </div>
+
+        <div class="stat-box" style="font-size: 11px; background: #fafafa;">
+          <div class="stat-title">FUTURE EXTENSION</div>
+          추후 엔트리 웹 편집기 상단에 <b>[REPY 탭]</b>을 추가해 실시간 동기화되는 Chrome 확장 프로그램이 배포될 예정입니다.
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 하단 접이식 문법 레퍼런스 -->
+  <div class="reference-drawer">
+    <div id="ref-toggle" class="reference-header">
+      <span>[+] REPY 문법 치트시트 & 블록 매핑 가이드 (클릭하여 열기)</span>
+      <span id="ref-icon">[+]</span>
+    </div>
+    <div id="ref-content" class="reference-content">
+      <div class="ref-card">
+        <h3>오브젝트 및 모양/이미지</h3>
+        <code>object "봇"(shape="entrybot", x=0, y=0):</code>
+        <code>shape="entrybot_walk1" / "cat" / "dog" / "coin"</code>
+        <code>shape=image("data:image/png;base64,...", width=64, height=64)</code>
+        <code>shapes = [shape("대기", "entrybot"), shape("걷기", "entrybot_walk1")]</code>
+        <code>textbox "이름"(text="안녕", font_size=18, x=0, y=0)</code>
+      </div>
+      <div class="ref-card">
+        <h3>이벤트 핸들러 (when)</h3>
+        <code>when run:           # 시작 버튼 클릭</code>
+        <code>when key("space"):   # 키보드 입력 ('left', 'a' 등)</code>
+        <code>when click:          # 오브젝트 클릭</code>
+        <code>when clone:          # 복제본이 처음 생성되었을 때</code>
+        <code>when message("신호"): # 신호를 받았을 때</code>
+      </div>
+      <div class="ref-card">
+        <h3>주요 동작 & 모양 교체</h3>
+        <code>move(10), move_x(5), move_y(-5)</code>
+        <code>goto(x, y), glide(초, x, y)</code>
+        <code>next_shape()         # 다음 모양으로 바꾸기</code>
+        <code>set_shape("걷기")     # 특정 모양으로 바꾸기</code>
+        <code>say("대사"), think("생각")</code>
+        <code>create_clone("self"), delete_clone()</code>
+      </div>
+      <div class="ref-card">
+        <h3>변수 / 리스트 / 붓(Brush)</h3>
+        <code>score = 0            # 일반 변수</code>
+        <code>items = list(["a"]) # 리스트 변수</code>
+        <code>items.append("b"), items.pop()</code>
+        <code>start_drawing(), stop_drawing()</code>
+        <code>set_pen_color('#ff0000'), set_pen_size(4)</code>
+        <code>clear_drawing(), stamp()</code>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    REAL ENTRY PYTHON (REPY) — 100% Client-Side Pure JavaScript Pipeline. Free & Open Source under MIT License.
+  </footer>
+
+  <script type="module" src="./app.js"></script>
+</body>
+</html>

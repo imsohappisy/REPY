@@ -26,8 +26,8 @@ object "엔트리봇":
   assert.equal(obj.sprite.pictures.length, 2);
   assert.equal(obj.sprite.pictures[0].name, '대기');
   assert.equal(obj.sprite.pictures[1].name, '걷기');
-  assert.equal(obj.sprite.pictures[0].imageType, 'svg');
-  assert.equal(obj.sprite.pictures[1].imageType, 'svg');
+  assert.equal(obj.sprite.pictures[0].imageType, 'png');
+  assert.equal(obj.sprite.pictures[1].imageType, 'png');
 });
 
 test('오브젝트 Base64 PNG 이미지 지정 및 단일 shape 지정 검증', () => {

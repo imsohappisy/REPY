@@ -2,6 +2,7 @@
 import { gzipSync } from 'fflate';
 import { buildTar } from './tar.js';
 import { createShapeSvg, defaultPlaceholderSvg } from './shapes.js';
+import { rasterizeSvg, createDefaultSpritePng } from './png.js';
 
 // 32글자 base36 해시 생성기 (엔트리 공식 규격과 호환)
 export function entryHash() {
@@ -54,67 +55,53 @@ export function packEnt(model, externalAssets = new Map()) {
       const picList = obj.pictures.length > 0 ? obj.pictures : [{ kind: 'default', name: '기본' }];
 
       for (const p of picList) {
-        let imgBytes, imageType = 'svg', dim;
+        let imgBytes = null, dim = { width: 100, height: 100 };
         const hash = entryHash();
         const d1 = hash.slice(0, 2), d2 = hash.slice(2, 4);
 
         if (p.kind === 'shape') {
           const res = createShapeSvg(p.shape, p.args, p.kwargs);
-          imgBytes = encoder.encode(res.svg);
           dim = { width: res.width, height: res.height };
-          imageType = 'svg';
+          if (p.pngBytes) {
+            imgBytes = p.pngBytes;
+          } else {
+            imgBytes = createDefaultSpritePng(dim.width, dim.height);
+          }
         } else if (p.kind === 'image' || p.kind === 'file') {
           const src = p.src || p.file || '';
           if (src.startsWith('data:image/')) {
             const m = src.match(/^data:image\/([a-zA-Z0-9\+\-]+);base64,(.*)$/);
             if (m) {
-              const mime = m[1].toLowerCase();
-              imageType = mime.includes('svg') ? 'svg' : 'png';
               imgBytes = decodeBase64(m[2]);
               dim = { width: p.width || 100, height: p.height || 100 };
-            } else if (src.startsWith('data:image/svg+xml')) {
-              const svgText = decodeURIComponent(src.split(',')[1] || '');
-              imageType = 'svg';
-              imgBytes = encoder.encode(svgText);
-              dim = { width: p.width || 100, height: p.height || 100 };
             }
-          } else if (src.trim().startsWith('<svg') || src.trim().startsWith('<?xml')) {
-            imageType = 'svg';
-            imgBytes = encoder.encode(src);
-            dim = { width: p.width || 100, height: p.height || 100 };
           } else if (externalAssets.has(src)) {
             const raw = externalAssets.get(src);
-            if (typeof raw === 'string') {
-              imageType = raw.trim().startsWith('<svg') ? 'svg' : 'png';
-              imgBytes = encoder.encode(raw);
-            } else {
-              imageType = src.endsWith('.svg') ? 'svg' : 'png';
-              imgBytes = new Uint8Array(raw);
+            if (raw instanceof Uint8Array) {
+              imgBytes = raw;
             }
             dim = { width: p.width || 100, height: p.height || 100 };
+          } else if (p.pngBytes) {
+            imgBytes = p.pngBytes;
+            dim = { width: p.width || 100, height: p.height || 100 };
           } else {
-            // 내장 프리셋 여부 확인 및 SVG 생성
             const res = createShapeSvg(src, p.args, p.kwargs);
-            imgBytes = encoder.encode(res.svg);
             dim = { width: res.width, height: res.height };
-            imageType = 'svg';
+            imgBytes = createDefaultSpritePng(dim.width, dim.height);
           }
-        } else {
-          const res = defaultPlaceholderSvg();
-          imgBytes = encoder.encode(res.svg);
-          dim = { width: res.width, height: res.height };
-          imageType = 'svg';
         }
 
-        const ext = imageType === 'png' ? 'png' : 'svg';
+        if (!imgBytes) {
+          imgBytes = createDefaultSpritePng(dim.width, dim.height);
+        }
 
         addDir(`temp/${d1}/`);
         addDir(`temp/${d1}/${d2}/`);
         addDir(`temp/${d1}/${d2}/image/`);
         addDir(`temp/${d1}/${d2}/thumb/`);
 
-        const imgPath = `temp/${d1}/${d2}/image/${hash}.${ext}`;
-        const thumbPath = `temp/${d1}/${d2}/thumb/${hash}.${ext}`;
+        const imgPath = `temp/${d1}/${d2}/image/${hash}.png`;
+        const thumbPath = `temp/${d1}/${d2}/thumb/${hash}.png`;
 
         tarFiles.push({ name: imgPath, data: imgBytes, typeflag: '0' });
         tarFiles.push({ name: thumbPath, data: imgBytes, typeflag: '0' });
@@ -125,7 +112,7 @@ export function packEnt(model, externalAssets = new Map()) {
           dimension: dim,
           filename: hash,
           fileurl: imgPath,
-          imageType: ext,
+          imageType: 'png',
         });
       }
     }
@@ -184,10 +171,11 @@ export function packEnt(model, externalAssets = new Map()) {
       };
     }
 
+    const rawThreads = obj.script && obj.script.length > 0 ? obj.script : [[]];
     objects.push({
       id: obj.id,
       name: obj.name,
-      script: JSON.stringify(obj.script), // 이중 직렬화 필수
+      script: JSON.stringify(rawThreads), // canonical [[]] shape required by Entry
       selectedPictureId: pictures[0] ? pictures[0].id : undefined,
       objectType: isTextBox ? 'textBox' : 'sprite',
       rotateMethod: props.rotate || 'free',

@@ -1,4 +1,4 @@
-import { compileToEnt, ReprError } from 'repy/index.js';
+import { compileToEntAsync, ReprError } from 'repy/index.js';
 
 const editor = document.getElementById('code-editor');
 const lineNumbers = document.getElementById('line-numbers');
@@ -110,7 +110,7 @@ function setLog(msg, type = 'normal') {
 }
 
 // 6. 변환 및 다운로드
-btnConvert.addEventListener('click', () => {
+btnConvert.addEventListener('click', async () => {
   const code = editor.value;
   if (!code.trim()) {
     setLog('오류: 변환할 코드가 비어 있습니다.', 'error');
@@ -119,7 +119,7 @@ btnConvert.addEventListener('click', () => {
 
   const startTime = performance.now();
   try {
-    const res = compileToEnt(code);
+    const res = await compileToEntAsync(code);
     const elapsed = (performance.now() - startTime).toFixed(1);
 
     // 메트릭 갱신

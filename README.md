@@ -15,7 +15,6 @@ Real Entry Python(REPY)은 엔트리(Entry)의 470여 개 모든 블록 코딩 �
    - 고양이, 강아지, 나무, 코인 등 캐릭터 프리셋 지원.
    - Base64 DataURL(PNG/JPG) 및 외부 이미지 자동 번들링.
 4. **.ent 바이너리 빌더**: Ustar TAR 규격 및 Deflate/Gzip 압축을 통해 playentry.org에서 바로 열리는 작품 파일 생성.
-5. **웹 변환기**: 투박한 단색과 각진 버튼(Brutalist Monochrome) 디자인의 브라우저 기반 실시간 변환 도구.
 
 ---
 

@@ -168,5 +168,15 @@ realentrypython/
 
 ---
 
+## 참고 및 크레딧 (References & Credits)
+
+본 프로젝트는 다음 오픈소스 프로젝트 및 기술 자료들을 참고하여 개발되었습니다:
+
+- **[entry-vibe-coding](https://github.com/205sla/entry-vibe-coding)**: 엔트리 블록 명세 분석, `.ent` 프로젝트 모델 규격 및 바이너리 패킹 설계 참고
+- **[entryjs](https://github.com/entrylabs/entryjs)**: 엔트리 공식 오픈소스 엔진 (엔트리 블록 및 모델 규격)
+- **[fflate](https://github.com/101arrowz/fflate)**: 고속 순수 자바스크립트 Deflate/Gzip 압축 라이브러리
+
+---
+
 ## 라이선스
 MIT License

@@ -9,6 +9,7 @@
     "node": ">=20"
   },
   "scripts": {
+    "build": "node tools/build-web.mjs",
     "build:registry": "node tools/build-registry.mjs",
     "test": "node --test tests/",
     "dev": "node tools/serve.mjs",

@@ -4,6 +4,8 @@ Real Entry Python(REPY)은 엔트리(Entry)의 470여 개 모든 블록 코딩 �
 
 기존 엔트리 내장 파이썬의 협소한 구현 범위를 극복하고, 파이썬 코드를 실제 엔트리 작품 파일(`.ent`)로 즉시 변환하여 실행할 수 있습니다.
 
+- **온라인 웹 변환기 바로가기**: [https://imsohappisy.github.io/REPY/](https://imsohappisy.github.io/REPY/)
+
 ---
 
 ## 주요 기능
